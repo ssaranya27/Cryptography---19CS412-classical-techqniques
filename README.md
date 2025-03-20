@@ -81,7 +81,7 @@ if (islower(cipher[i]) && plain[i] < 'a') {
 ```
 ## OUTPUT:
 
-![alt text](<Screenshot 2025-03-19 194812.png>)
+[text](README.md)
 
 ## RESULT:
 The program is executed successfully
