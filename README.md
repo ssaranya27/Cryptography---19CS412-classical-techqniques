@@ -129,6 +129,7 @@ To decrypt, use the INVERSE (opposite) of the last 3 rules, and the 1st as-is (d
 
 
 ## PROGRAM:
+```
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -268,6 +269,7 @@ int main()
     return 0;
 }
 
+```
 ## OUTPUT:
 
 ![alt text](<image copy.png>)
