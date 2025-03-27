@@ -315,61 +315,94 @@ The cipher can, be adapted to an alphabet with any number of letters. All arithm
 ## PROGRAM:
 PROGRAM:
 ```
- #include <stdio.h>
- #include <string.h>
- int main() {
- unsigned int a[3][3] = {{6, 24, 1}, {13, 16, 10}, {20, 17, 15}};
- unsigned int b[3][3] = {{8, 5, 10}, {21, 8, 21}, {21, 12, 8}};
- int i, j, t = 0;
- unsigned int c[3], d[3];
- char msg[4]; // buffer for exactly 3 characters plus null terminator
- printf("Enter plain text (3 letters): ");
-scanf("%3s", msg); // ensure input is limited to 3 characters
- // Ensure the message has exactly 3 characters
- if (strlen(msg) != 3) {
- printf("Error: The plain text must be exactly 3 letters.\n");
- return 1;
- }
- // Convert plain text to numerical values (A=0, B=1, ..., Z=25)
- for (i = 0; i < 3; i++) {
- c[i] = msg[i]- 'A';
- printf("%d ", c[i]); // display numerical representation of characters
- }
- // Encrypt the message using matrix 'a'
- for (i = 0; i < 3; i++) {
- t = 0;
- for (j = 0; j < 3; j++) {
- t += a[i][j] * c[j];
- }
- d[i] = t % 26; // mod 26 for alphabet range
- }
- // Output encrypted cipher text
- printf("\nEncrypted Cipher Text: ");
- for (i = 0; i < 3; i++) {
- printf("%c", d[i] + 'A');
- }
- // Decrypt the message using matrix 'b'
- for (i = 0; i < 3; i++) {
- t = 0;
-for (j = 0; j < 3; j++) {
- t += b[i][j] * d[j];
- }
- c[i] = t % 26; // mod 26 for alphabet range
- }
- // Output decrypted cipher text
- printf("\nDecrypted Cipher Text: ");
- for (i = 0; i < 3; i++) {
- printf("%c", c[i] + 'A');
- }
- getchar(); // Use getchar() to wait for input
- return 0;
- }
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define SIZE 2  // Size of the key matrix (2x2 for simplicity)
+
+int keyMatrix[SIZE][SIZE];
+
+void toUpperCase(char *str) {
+    for (int i = 0; str[i]; i++) {
+        str[i] = toupper(str[i]);
+    }
+}
+
+void removeSpaces(char *str) {
+    int count = 0;
+    for (int i = 0; str[i]; i++) {
+        if (str[i] != ' ') {
+            str[count++] = str[i];
+        }
+    }
+    str[count] = '\0';
+}
+
+void getKeyMatrix(char *key) {
+    int k = 0;
+    toUpperCase(key);
+    removeSpaces(key);
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            keyMatrix[i][j] = key[k++] - 'A';
+        }
+    }
+}
+
+void encrypt(char *text, char *cipher) {
+    toUpperCase(text);
+    removeSpaces(text);
+    int len = strlen(text);
+    if (len % SIZE != 0) {
+        text[len++] = 'X';  // Padding if needed
+        text[len] = '\0';
+    }
+    
+    for (int i = 0; i < len; i += SIZE) {
+        for (int row = 0; row < SIZE; row++) {
+            int sum = 0;
+            for (int col = 0; col < SIZE; col++) {
+                sum += keyMatrix[row][col] * (text[i + col] - 'A');
+            }
+            cipher[i + row] = (sum % 26) + 'A';
+        }
+    }
+    cipher[len] = '\0';
+}
+
+void printKeyMatrix() {
+    printf("Key Matrix:\n");
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            printf("%d ", keyMatrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    char key[SIZE * SIZE + 1], text[100], cipher[100];
+    
+    printf("Enter key (4 letters): ");
+    scanf("%s", key);
+    getKeyMatrix(key);
+    printKeyMatrix();
+    
+    printf("Enter plaintext: ");
+    scanf("%s", text);
+    
+    encrypt(text, cipher);
+    printf("Ciphertext: %s\n", cipher);
+    
+    return 0;
+}
 ```
 
 ## OUTPUT:
 OUTPUT:
 
-![alt text](image.png)
+![alt text](image-1.png)
 
 ## RESULT:
 The program is executed successfully
