@@ -517,7 +517,7 @@ void decipher() {
 
 ## OUTPUT:
 OUTPUT :
-![alt text](image.png)
+![alt text](image-2.png)
 
 ## RESULT:
 The program is executed successfully
